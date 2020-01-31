@@ -24,43 +24,39 @@ def main():
 
 
     background_color = (0, 0, 0)
-    snake_color = (55, 55, 0)
+    snake_color = (10, 0, 10)
+    food_color = (0, 15, 0)
 
-    xy = [[0, 0], ] 
+    xy = [[0, 0], ]
     direction = 'right'
-    game_field = field.get_field(background_color, snake_color, xy)
+    game_field = field.get_field(background_color, snake_color, food_color, xy)
     render.show(two_in_one.convert(game_field))
-
+    food = rand_coord_food(xy)
     while True:
-        if pygame.mixer.get_busy() != None:
-            for event in pygame.event.get():
-                if event.type == pygame.JOYBUTTONDOWN:
-                    if event.button == 0:
-                        direction = 'up'
-                        xy = change_coord_list(xy, direction)
-                        game_field = field.get_field(background_color, snake_color, xy)
-                        render.show(two_in_one.convert(game_field))
-                    if event.button == 2:
-                        direction = 'down'
-                        xy = change_coord_list(xy, direction)
-                        game_field = field.get_field(background_color, snake_color, xy)
-                        render.show(two_in_one.convert(game_field))
-                    if event.button == 1:
-                        direction = 'right'
-                        xy = change_coord_list(xy, direction)
-                        game_field = field.get_field(background_color, snake_color, xy)
-                        render.show(two_in_one.convert(game_field))
-                    if event.button == 3:
-                        direction = 'left'
-                        xy = change_coord_list(xy, direction)
-                        game_field = field.get_field(background_color, snake_color, xy)
-                        render.show(two_in_one.convert(game_field))
-                    if event.button == 12:
-                        xy = change_coord_list(xy, direction, True)
-                        game_field = field.get_field(background_color, snake_color, xy)
-                        render.show(two_in_one.convert(game_field))
-                        print(xy)
-        time.sleep(0.1)
+        for event in pygame.event.get():
+            if event.type == pygame.JOYBUTTONDOWN:
+                if event.button == 0:
+                    direction = 'up'
+                if event.button == 2:
+                    direction = 'down'
+                if event.button == 1:
+                    direction = 'right'
+                if event.button == 3:
+                    direction = 'left'
+                if event.button == 12:
+                    xy = change_coord_list(xy, direction, True)
+                if event.button == 11:
+                    print(xy)
+                if event.button == 10:
+                    exit()
+
+        xy = change_coord_list(xy, direction)
+        if xy[-1] == food:
+            food = rand_coord_food(xy)
+            xy = change_coord_list(xy, direction, True)
+        game_field = field.get_field(background_color, snake_color, food_color, xy, food)
+        render.show(two_in_one.convert(game_field))
+        time.sleep(0.2)
 
 
 def change_coord(coord, direction):
@@ -95,15 +91,25 @@ def change_coord(coord, direction):
 
 def change_coord_list(coord_list, direction, new = False):
     if new:
-        coord_list.append(change_coord(coord_list[-1], direction))
+        coord_list.append(change_coord(coord_list[-1][:], direction))
     else:
         coord_list_temp = []
         for i in range(1, len(coord_list)):
-            coord_list_temp.append(coord_list[i])
-        coord_list_temp.append(change_coord(coord_list[-1], direction))
+            coord_list_temp.append(coord_list[i][:])
+        coord_new = change_coord(coord_list[-1][:], direction)
+        coord_list_temp.append(coord_new[:])
+        if coord_new in coord_list:
+            time.sleep(2)
+            exit()
         coord_list = coord_list_temp[:]
     return coord_list[:]
 
+
+def rand_coord_food(xy):
+    while True:
+        food = random.sample(range(0, 16), 2)
+        if food not in xy:
+            return food
 
 
 if __name__ == '__main__':
