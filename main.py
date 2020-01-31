@@ -36,13 +36,17 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.JOYBUTTONDOWN:
                 if event.button == 0:
-                    direction = 'up'
+                    if not direction == 'up' and not direction == 'down':
+                        direction = 'up'
                 if event.button == 2:
-                    direction = 'down'
+                    if not direction == 'up' and not direction == 'down':
+                        direction = 'down'
                 if event.button == 1:
-                    direction = 'right'
+                    if not direction == 'left' and not direction == 'right':
+                        direction = 'right'
                 if event.button == 3:
-                    direction = 'left'
+                    if not direction == 'ledt' and not direction == 'right':
+                        direction = 'left'
                 if event.button == 12:
                     xy = change_coord_list(xy, direction, True)
                 if event.button == 11:
