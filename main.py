@@ -8,23 +8,8 @@ import two_in_one
 
 
 def main():
-
-
-
-    pygame.init()
-    controller = pygame.joystick.Joystick(0)
-    controller.init()
-    pygame.display.set_mode((1, 1))
-    axis = {}
-    button = {}
-    AXIS_X = 3
-    AXIS_Y = 4
-    rot_x = 0.0
-    rot_y = 0.0
-
-
     background_color = (0, 0, 0)
-    snake_color = (10, 0, 10)
+    snake_color = (10, 0, 0)
     food_color = (0, 15, 0)
 
     xy = [[0, 0], ]
@@ -52,7 +37,9 @@ def main():
                 if event.button == 11:
                     print(xy)
                 if event.button == 10:
-                    exit()
+                    start_and_stop()
+                if event.button == 9:
+                    pause()
 
         xy = change_coord_list(xy, direction)
         if xy[-1] == food:
@@ -103,8 +90,9 @@ def change_coord_list(coord_list, direction, new = False):
         coord_new = change_coord(coord_list[-1][:], direction)
         coord_list_temp.append(coord_new[:])
         if coord_new in coord_list:
+            print(len(coord_list))
             time.sleep(2)
-            exit()
+            start_and_stop()
         coord_list = coord_list_temp[:]
     return coord_list[:]
 
@@ -116,5 +104,35 @@ def rand_coord_food(xy):
             return food
 
 
+def pause():
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.JOYBUTTONDOWN:
+                if event.button == 9:
+                    return 0 
+
+
+def start_and_stop():
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.JOYBUTTONDOWN:
+                if event.button == 10:
+                    main()
+
+
+def init():
+    pygame.init()
+    controller = pygame.joystick.Joystick(0)
+    controller.init()
+    pygame.display.set_mode((1, 1))
+    axis = {}
+    button = {}
+    AXIS_X = 3
+    AXIS_Y = 4
+    rot_x = 0.0
+    rot_y = 0.0
+
+
 if __name__ == '__main__':
-    main()
+    init()
+    start_and_stop()
